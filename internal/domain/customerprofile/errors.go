@@ -1,6 +1,6 @@
 package customerprofile
 
-import domainerrors "github.com/akaporn-katip/go-project-structure-template/internal/domain/core/domainerrors"
+import "github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
 
 var (
 	ErrInvalidDateOfBirthFormat = domainerrors.NewInvalidInputError("date of birth must be in format YYYY-MM-DD, YYYY-MM, or YYYY")

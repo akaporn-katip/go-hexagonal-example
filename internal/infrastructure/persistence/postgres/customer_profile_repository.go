@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/domain/core/domainerrors"
+	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
 	"github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
