@@ -8,9 +8,9 @@ import (
 )
 
 type Config struct {
-	Server        ServerConfig
-	Database      DatabaseConfig
-	Observability ObservabilityConfig
+	Server        ServerConfig        `mapstructure:"server"`
+	Database      DatabaseConfig      `mapstructure:"database"`
+	Observability ObservabilityConfig `mapstructure:"observability"`
 	// JWT      JWTConfig
 	// Redis    RedisConfig
 }
@@ -21,9 +21,10 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	DSN          string
-	MaxOpenConns int
-	MaxIdleConns int
+	Type         string `mapstructure:"type"`
+	DSN          string `mapstructure:"dsn"`
+	MaxOpenConns int    `mapstructure:"max_open_conns"`
+	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 }
 
 type ObservabilityConfig struct {
@@ -83,6 +84,12 @@ func setDefaults() {
 	viper.SetDefault("observability.enable_metrics", true)
 	viper.SetDefault("observability.enable_logging", true)
 	viper.SetDefault("observability.log_level", "info")
+
+	// database
+	viper.SetDefault("database.type", "")
+	viper.SetDefault("database.dsn", "")
+	viper.SetDefault("database.max_open_conns", 25)
+	viper.SetDefault("database.max_idle_conns", 5)
 }
 
 func validate(cfg *Config) error {

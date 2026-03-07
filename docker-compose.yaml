@@ -18,8 +18,7 @@ services:
       - ./otel/tempo-config.yaml:/etc/tempo.yaml
       - tempo:/var/tempo
     ports:
-      - "3200:3200"   # Tempo UI/API
-      - "4317"        # OTLP gRPC (internal for Alloy)
+      - "4317"
     networks:
       - otelnet
     
@@ -40,7 +39,6 @@ services:
     image: grafana/alloy:latest
     container_name: alloy
     ports:
-      - "12345:12345" # UI
       - "4317:4317"   # OTLP gRPC (Incoming from your Go/Python apps)
       - "4318:4318"   # OTLP HTTP (Incoming from your Go/Python apps)    
     volumes:
@@ -71,6 +69,19 @@ services:
       - loki
       - tempo
       - mimir
+
+  # app:
+  #   container_name: app
+  #   image: app
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #   command: serve -c ./config/config.yaml
+  #   networks:
+  #     - orynet
 
 volumes:
   loki:

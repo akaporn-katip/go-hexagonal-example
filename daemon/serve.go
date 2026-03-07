@@ -1,4 +1,4 @@
-package main
+package daemon
 
 import (
 	"context"
@@ -50,8 +50,8 @@ func setupInMemoryDB() (*sqlx.DB, error) {
 	return db, nil
 }
 
-func main() {
-	cfg, err := config.Load()
+func Serve(configPath string) {
+	cfg, err := config.LoadWithPath(configPath)
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
