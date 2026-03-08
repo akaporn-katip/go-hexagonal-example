@@ -4,7 +4,6 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/infrastructure/observability"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,8 +34,6 @@ func (l *LoggingMiddleware) Handle() gin.HandlerFunc {
 
 		// Get trace context
 		ctx := c.Request.Context()
-		traceID := observability.GetTraceID(ctx)
-		spanID := observability.GetSpanID(ctx)
 
 		// Log attributes
 		attrs := []any{
@@ -46,8 +43,6 @@ func (l *LoggingMiddleware) Handle() gin.HandlerFunc {
 			"duration_ms", duration.Milliseconds(),
 			"client_ip", clientIP,
 			"user_agent", userAgent,
-			"trace_id", traceID,
-			"span_id", spanID,
 		}
 
 		// Check if there were any errors

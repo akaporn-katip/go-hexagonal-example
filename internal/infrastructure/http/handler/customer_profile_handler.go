@@ -5,7 +5,6 @@ import (
 
 	"github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/command"
 	"github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/dto"
-	"github.com/akaporn-katip/go-project-structure-template/internal/infrastructure/observability"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -24,10 +23,8 @@ func NewCustomerProfileHandler(createCustomerProfileHandler *command.CreateCusto
 
 func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 	reqCtx := ctx.Request.Context()
-	traceID := observability.GetTraceID(reqCtx)
 
 	slog.InfoContext(reqCtx, "Creating customer profile",
-		"trace_id", traceID,
 		"method", ctx.Request.Method,
 		"path", ctx.Request.URL.Path,
 	)
@@ -36,7 +33,6 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		slog.ErrorContext(reqCtx, "Failed to bind request",
-			"trace_id", traceID,
 			"error", err.Error(),
 		)
 		RespondInternalError(ctx, err.Error(), nil)
@@ -54,7 +50,6 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 	id, err := c.createCustomerProfileHandler.Handle(reqCtx, command)
 	if err != nil {
 		slog.ErrorContext(reqCtx, "Failed to create customer profile",
-			"trace_id", traceID,
 			"email", req.Email,
 			"error", err.Error(),
 		)
@@ -63,7 +58,6 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 	}
 
 	slog.InfoContext(reqCtx, "Customer profile created successfully",
-		"trace_id", traceID,
 		"customer_id", id,
 		"email", req.Email,
 	)
