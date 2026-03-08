@@ -4,6 +4,7 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"github.com/akaporn-katip/go-project-structure-template/cmd/migrate"
 	"github.com/akaporn-katip/go-project-structure-template/cmd/serve"
 	"github.com/spf13/cobra"
 )
@@ -28,6 +29,7 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	rootCmd.AddCommand(serve.NewServeCmd())
+	rootCmd.AddCommand(migrate.NewMigrateCmd())
 
 	rootCmd.PersistentFlags().StringP("config", "c", "./config", "Config path")
 

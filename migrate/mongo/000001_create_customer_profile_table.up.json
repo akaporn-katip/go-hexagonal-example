@@ -1,0 +1,15 @@
+[
+  {
+    "create": "customer_profile"
+  },
+  {
+    "createIndexes": "customer_profile",
+    "indexes": [
+      {
+        "key": { "email": 1 },
+        "name": "email_unique_idx",
+        "unique": true
+      }
+    ]
+  }
+]

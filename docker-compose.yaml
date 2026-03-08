@@ -70,6 +70,18 @@ services:
       - tempo
       - mimir
 
+  # migrate:
+  #   container_name: migrate
+  #   image: goapp
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   command: migrate -c ./config
+  #   networks:
+  #     - otelnet
+  #   depends_on:
+  #     - postgres
+
   # app:
   #   container_name: app
   #   image: app
@@ -78,8 +90,7 @@ services:
   #     dockerfile: ./Dockerfile
   #   ports:
   #     - "8081:8081"
-  #   environment:
-  #   command: serve -c ./config/config.yaml
+  #   command: serve -c ./config
   #   networks:
   #     - orynet
 
