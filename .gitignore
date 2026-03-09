@@ -4,3 +4,4 @@ coverage.out
 # binary
 bin/*
 !bin/.keep
+.DS_Store

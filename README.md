@@ -1,282 +1,95 @@
+# Project Explanation: Go Project Structure Template
 
-## Project Structure
-```
-crm-api/
-├── cmd/
-│   └── api/
-│       └── main.go
-├── internal/
-│   ├── domain/
-│   │   ├── user/
-│   │   │   ├── entity.go
-│   │   │   ├── repository.go
-│   │   │   ├── service.go
-│   │   │   ├── errors.go
-│   │   │   └── value_objects.go
-│   │   ├── product/
-│   │   │   ├── entity.go
-│   │   │   ├── repository.go
-│   │   │   ├── service.go
-│   │   │   └── errors.go
-│   │   └── order/
-│   │       ├── entity.go
-│   │       ├── repository.go
-│   │       ├── service.go
-│   │       └── events.go
-│   ├── application/
-│   │   ├── user/
-│   │   │   ├── command/
-│   │   │   │   ├── create_user.go
-│   │   │   │   ├── update_user.go
-│   │   │   │   └── delete_user.go
-│   │   │   ├── query/
-│   │   │   │   ├── get_user.go
-│   │   │   │   └── list_users.go
-│   │   │   └── dto/
-│   │   │       ├── user_request.go
-│   │   │       └── user_response.go
-│   │   ├── product/
-│   │   │   └── ...
-│   │   └── order/
-│   │       └── ...
-│   ├── infrastructure/
-│   │   ├── http/
-│   │   │   ├── handler/
-│   │   │   │   ├── user_handler.go
-│   │   │   │   ├── product_handler.go
-│   │   │   │   └── order_handler.go
-│   │   │   ├── middleware/
-│   │   │   │   ├── auth.go
-│   │   │   │   ├── logging.go
-│   │   │   │   ├── cors.go
-│   │   │   │   └── error_handler.go
-│   │   │   ├── router.go
-│   │   │   └── response.go
-│   │   ├── persistence/
-│   │   │   ├── postgres/
-│   │   │   │   ├── user_repository.go
-│   │   │   │   ├── product_repository.go
-│   │   │   │   ├── order_repository.go
-│   │   │   │   └── migrations/
-│   │   │   │       ├── 001_create_users.sql
-│   │   │   │       ├── 002_create_products.sql
-│   │   │   │       └── 003_create_orders.sql
-│   │   │   └── redis/
-│   │   │       └── cache_repository.go
-│   │   ├── messaging/
-│   │   │   └── event_publisher.go
-│   │   └── config/
-│   │       └── database.go
-│   └── shared/
-│       ├── errors/
-│       │   └── errors.go
-│       ├── logger/
-│       │   └── logger.go
-│       └── validator/
-│           └── validator.go
-├── pkg/
-│   ├── contextutil/
-│   │   └── context.go
-│   └── pagination/
-│       └── pagination.go
-├── config/
-│   ├── config.go
-│   └── config.yaml
-├── api/
-│   └── openapi.yaml
-├── scripts/
-│   ├── setup.sh
-│   └── migrate.sh
-├── deployments/
-│   └── docker/
-│       ├── Dockerfile
-│       └── docker-compose.yml
-├── tests/
-│   ├── integration/
-│   │   └── user_test.go
-│   └── fixtures/
-│       └── users.json
-├── go.mod
-├── go.sum
-├── Makefile
-├── .env.example
-├── .gitignore
-└── README.md
-```
-## 1. **Constructor Struct Pattern** (Recommended)
+This project is a comprehensive **Go Project Structure Template** designed with **Domain-Driven Design (DDD)**, **Clean Architecture**, and **Hexagonal Architecture** principles. It serves as a robust starting point for building scalable and maintainable microservices, specifically exemplified by a CRM-like API for managing customer profiles.
 
-````go
-package customerprofile
+---
 
-type CustomerProfileInput struct {
-	Firstname   string
-	Lastname    string
-	DateOfBirth string
-	Email       string
-}
+## 🏗 Architectural Patterns
 
-func NewCustomer(input CustomerProfileInput) (*CustomerProfile, error) {
-	dof, err := NewDateOfBirth(input.DateOfBirth)
-	if err != nil {
-		return nil, err
-	}
+The project follows a layered architecture to ensure separation of concerns:
 
-	email, err := NewEmail(input.Email)
-	if err != nil {
-		return nil, err
-	}
+1.  **Domain Layer (`internal/domain`)**: The core of the application. It contains business logic, entities (`CustomerProfile`), value objects (`Email`, `DateOfBirth`), and repository interfaces. It has no dependencies on other layers.
+2.  **Application Layer (`internal/application`)**: Orchestrates the business logic. It implements the **CQRS-lite** pattern using Command/Query handlers. It also defines the **Unit of Work** interface to manage transactions.
+3.  **Infrastructure Layer (`internal/infrastructure`)**: Contains technical implementations.
+    -   **HTTP**: Uses the **Gin** framework for routing and middleware.
+    -   **Persistence**: Supports both **PostgreSQL** (via `sqlx`) and **MongoDB**.
+    -   **Observability**: Integrated with **OpenTelemetry (OTel)** for distributed tracing, metrics, and structured logging.
+4.  **CMD Layer (`cmd/`)**: Entry points for the CLI application using **Cobra**.
 
-	return &CustomerProfile{
-		Firstname:   input.Firstname,
-		Lastname:    input.Lastname,
-		Email:       *email,
-		DateOfBirth: *dof,
-	}, nil
-}
-````
+---
 
-## 2. **Builder Pattern**
+## 📂 Directory Structure
 
-````go
-type CustomerProfileBuilder struct {
-	firstname   string
-	lastname    string
-	dateOfBirth string
-	email       string
-	address     Address
-}
+-   `cmd/`: CLI commands (`serve`, `migrate`).
+-   `config/`: Configuration management using **Viper** (`config.yaml`).
+-   `daemon/`: Bootstrapping logic to initialize the server, databases, and observability.
+-   `internal/`: Private application code.
+    -   `application/`: Command handlers, DTOs, and Unit of Work interfaces.
+    -   `core/`: Shared domain errors and events.
+    -   `domain/`: Business entities and logic.
+    -   `infrastructure/`: Database, HTTP, and Observability implementations.
+-   `migrate/`: Database migration logic and scripts (SQL and NoSQL).
+-   `otel/`: Configuration for OpenTelemetry components (Alloy, Mimir, Tempo, Grafana).
+-   `pkg/`: Shared utility packages (e.g., `array_utils`, `result`).
 
-func NewCustomerBuilder() *CustomerProfileBuilder {
-	return &CustomerProfileBuilder{}
-}
+---
 
-func (b *CustomerProfileBuilder) WithName(firstname, lastname string) *CustomerProfileBuilder {
-	b.firstname = firstname
-	b.lastname = lastname
-	return b
-}
+## 🛠 Technology Stack
 
-func (b *CustomerProfileBuilder) WithDateOfBirth(dob string) *CustomerProfileBuilder {
-	b.dateOfBirth = dob
-	return b
-}
+-   **Language**: Go 1.25.2
+-   **HTTP Framework**: [Gin Gonic](https://github.com/gin-gonic/gin)
+-   **CLI Framework**: [Cobra](https://github.com/spf13/cobra)
+-   **Configuration**: [Viper](https://github.com/spf13/viper)
+-   **Databases**: PostgreSQL and MongoDB
+-   **Migrations**: [Golang Migrate](https://github.com/golang-migrate/migrate)
+-   **Observability**: [OpenTelemetry](https://opentelemetry.io/) (OTel)
+-   **Testing**: [Testify](https://github.com/stretchr/testify), `sqlmock`
 
-func (b *CustomerProfileBuilder) WithEmail(email string) *CustomerProfileBuilder {
-	b.email = email
-	return b
-}
+---
 
-func (b *CustomerProfileBuilder) WithAddress(address Address) *CustomerProfileBuilder {
-	b.address = address
-	return b
-}
+## 🚀 Key Features
 
-func (b *CustomerProfileBuilder) Build() (*CustomerProfile, error) {
-	dof, err := NewDateOfBirth(b.dateOfBirth)
-	if err != nil {
-		return nil, err
-	}
+### 1. Robust Observability
+The project is pre-configured with a full observability stack:
+-   **Tracing**: Exported to OTLP (e.g., Tempo).
+-   **Metrics**: Custom metrics for HTTP requests and business operations (e.g., Mimir).
+-   **Logging**: Structured logging via `slog` with OTel integration.
 
-	email, err := NewEmail(b.email)
-	if err != nil {
-		return nil, err
-	}
+### 2. Multi-Database Support
+It provides implementations for both SQL (Postgres) and NoSQL (MongoDB), demonstrating how to swap persistence layers while keeping the domain intact.
 
-	return &CustomerProfile{
-		Firstname:      b.firstname,
-		Lastname:       b.lastname,
-		Email:          *email,
-		DateOfBirth:    *dof,
-		CurrentAddress: b.address,
-	}, nil
-}
-````
+### 3. Graceful Shutdown
+The server handles `SIGINT` and `SIGTERM` signals to shut down gracefully, ensuring all connections (DB, OTel) are closed properly.
 
-## 3. **Functional Options Pattern**
+### 4. Unit of Work Pattern
+Ensures that multiple repository operations can be treated as a single transaction, maintaining data integrity.
 
-````go
-type CustomerOption func(*CustomerProfile) error
+### 5. Load Testing
+Includes a `load_test.js` for **k6**, pre-configured to simulate traffic with a controlled error rate (10%) to test observability and error handling under load.
 
-func WithName(firstname, lastname string) CustomerOption {
-	return func(c *CustomerProfile) error {
-		c.Firstname = firstname
-		c.Lastname = lastname
-		return nil
-	}
-}
+---
 
-func WithDateOfBirth(dob string) CustomerOption {
-	return func(c *CustomerProfile) error {
-		dateOfBirth, err := NewDateOfBirth(dob)
-		if err != nil {
-			return err
-		}
-		c.DateOfBirth = *dateOfBirth
-		return nil
-	}
-}
+## 🚦 How to Run
 
-func WithEmail(email string) CustomerOption {
-	return func(c *CustomerProfile) error {
-		emailVO, err := NewEmail(email)
-		if err != nil {
-			return err
-		}
-		c.Email = *emailVO
-		return nil
-	}
-}
+### Prerequisite
+- Go 1.25+
+- Docker & Docker-Compose (for databases and observability stack)
 
-func NewCustomer(opts ...CustomerOption) (*CustomerProfile, error) {
-	customer := &CustomerProfile{}
-	
-	for _, opt := range opts {
-		if err := opt(customer); err != nil {
-			return nil, err
-		}
-	}
-	
-	return customer, nil
-}
-````
+### Steps
+1.  **Start Infrastructure**:
+    ```bash
+    docker-compose up -d
+    ```
+2.  **Run Migrations**:
+    ```bash
+    go run main.go migrate sql up
+    # or for mongo
+    go run main.go migrate mongo up
+    ```
+3.  **Start the Server**:
+    ```bash
+    go run main.go serve
+    ```
 
-## Usage Examples:
-
-**Constructor Struct:**
-```go
-customer, err := NewCustomer(CustomerProfileInput{
-	Firstname:   "John",
-	Lastname:    "Doe",
-	DateOfBirth: "1990-01-01",
-	Email:       "john@example.com",
-})
-```
-
-**Builder Pattern:**
-```go
-customer, err := NewCustomerBuilder().
-	WithName("John", "Doe").
-	WithDateOfBirth("1990-01-01").
-	WithEmail("john@example.com").
-	Build()
-```
-
-**Functional Options:**
-```go
-customer, err := NewCustomer(
-	WithName("John", "Doe"),
-	WithDateOfBirth("1990-01-01"),
-	WithEmail("john@example.com"),
-)
-```
-
-## Recommendation:
-
-For your use case, I recommend the **Constructor Struct Pattern** because:
-- Simple and clear
-- Easy to validate all inputs at once
-- Good IDE support with autocompletion
-- Minimal boilerplate code
-- Easy to extend with new fields
-
-The Builder pattern is better when you have complex object construction with many optional fields, while Functional Options are great for highly configurable APIs.
+The API will be available at `http://localhost:8080/crm-api/v1`.
+Check health at `GET /crm-api/v1/health`.
