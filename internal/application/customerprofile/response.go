@@ -1,4 +1,4 @@
-package dto
+package customerprofileapp
 
 import "github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
 

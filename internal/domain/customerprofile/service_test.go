@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 )
 
 // MockRepository is a mock implementation of the Repository interface

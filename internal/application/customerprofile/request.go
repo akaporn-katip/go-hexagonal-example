@@ -1,4 +1,4 @@
-package dto
+package customerprofileapp
 
 type CreateCustomerProfileRequest struct {
 	Title       string `json:"title" validate:"required"`

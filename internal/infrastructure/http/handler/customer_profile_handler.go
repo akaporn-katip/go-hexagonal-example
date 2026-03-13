@@ -3,18 +3,17 @@ package handler
 import (
 	"log/slog"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/command"
-	"github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/dto"
+	customerprofileapp "github.com/akaporn-katip/go-project-structure-template/internal/application/customerprofile"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
 type CustomerProfileHandler struct {
-	createCustomerProfileHandler *command.CreateCustomerProfileHandler
+	createCustomerProfileHandler *customerprofileapp.CreateCustomerProfileHandler
 	validator                    *validator.Validate
 }
 
-func NewCustomerProfileHandler(createCustomerProfileHandler *command.CreateCustomerProfileHandler, validator *validator.Validate) *CustomerProfileHandler {
+func NewCustomerProfileHandler(createCustomerProfileHandler *customerprofileapp.CreateCustomerProfileHandler, validator *validator.Validate) *CustomerProfileHandler {
 	return &CustomerProfileHandler{
 		createCustomerProfileHandler: createCustomerProfileHandler,
 		validator:                    validator,
@@ -29,7 +28,7 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 		"path", ctx.Request.URL.Path,
 	)
 
-	var req dto.CreateCustomerProfileRequest
+	var req customerprofileapp.CreateCustomerProfileRequest
 
 	if err := ctx.ShouldBind(&req); err != nil {
 		slog.ErrorContext(reqCtx, "Failed to bind request",
@@ -39,7 +38,7 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 		return
 	}
 
-	command := command.CreateCustomerProfileCommand{
+	command := customerprofileapp.CreateCustomerProfileCommand{
 		Title:       req.Title,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
@@ -62,5 +61,5 @@ func (c *CustomerProfileHandler) Create(ctx *gin.Context) {
 		"email", req.Email,
 	)
 
-	ResponseOK(ctx, dto.ToCustomerIDResponse(id))
+	ResponseOK(ctx, customerprofileapp.ToCustomerIDResponse(id))
 }

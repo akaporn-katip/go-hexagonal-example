@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"

@@ -1,12 +1,12 @@
-package command
+package customerprofileapp
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
 	"github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 )
 
 // MockCustomerProfileRepository is a mock implementation of the Repository interface

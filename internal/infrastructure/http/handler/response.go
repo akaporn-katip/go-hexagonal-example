@@ -6,7 +6,7 @@ import (
 	nethttp "net/http"
 	"strings"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel/trace"
 )

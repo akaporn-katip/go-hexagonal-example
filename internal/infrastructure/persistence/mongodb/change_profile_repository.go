@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
 	"github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.opentelemetry.io/otel"

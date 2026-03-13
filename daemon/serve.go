@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/akaporn-katip/go-project-structure-template/config"
-	"github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/command"
+	customerprofileapp "github.com/akaporn-katip/go-project-structure-template/internal/application/customerprofile"
 	"github.com/akaporn-katip/go-project-structure-template/internal/infrastructure/http"
 	"github.com/akaporn-katip/go-project-structure-template/internal/infrastructure/http/handler"
 	"github.com/akaporn-katip/go-project-structure-template/internal/infrastructure/http/middleware"
@@ -133,7 +133,7 @@ func Serve(configPath string) {
 	// ====================================================================
 	// Initialize Application Layer
 	// ====================================================================
-	createCustomerProfileHandler := command.NewCreateCustomerProfileHandler(uow)
+	createCustomerProfileHandler := customerprofileapp.NewCreateCustomerProfileCommandHandler(uow)
 
 	// ====================================================================
 	// Initialize HTTP Layer with Metrics Middleware

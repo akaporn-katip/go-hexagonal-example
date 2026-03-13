@@ -1,4 +1,4 @@
-package command
+package customerprofileapp
 
 import (
 	"context"
@@ -23,10 +23,10 @@ type CreateCustomerProfileHandler struct {
 	tracer trace.Tracer
 }
 
-func NewCreateCustomerProfileHandler(uow unitofwork.UnitOfWork) *CreateCustomerProfileHandler {
+func NewCreateCustomerProfileCommandHandler(uow unitofwork.UnitOfWork) *CreateCustomerProfileHandler {
 	return &CreateCustomerProfileHandler{
 		uow:    uow,
-		tracer: otel.Tracer("github.com/akaporn-katip/go-project-structure-template/internal/application/customer_profile/command/create_customer_profile"),
+		tracer: otel.Tracer("github.com/akaporn-katip/go-project-structure-template/internal/application/customerprofile/create_command_handler"),
 	}
 }
 

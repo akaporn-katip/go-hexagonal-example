@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/akaporn-katip/go-project-structure-template/internal/core/domainerrors"
 	"github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
+	"github.com/akaporn-katip/go-project-structure-template/internal/domainerrors"
 )
 
 // MockDatabaseExecutor implements DatabaseExecutor for testing
