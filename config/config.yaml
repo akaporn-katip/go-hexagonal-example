@@ -7,7 +7,7 @@ database:
   type: "mongodb"
   mongodb:
     uri: "your uri connection"
-    db_name: "foodb"
+    db_name: "your db name"
 
   postgres:
     dsn: "your postgres dsn"
