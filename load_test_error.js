@@ -10,7 +10,7 @@ export const options = {
   ],
   // Optional: Thresholds allow k6 to fail the test if the error rate exceeds a limit
   thresholds: {
-    // http_req_failed: ['rate < 0.15'], // We expect ~10%, so fail if > 15%
+    http_req_failed: ['rate < 0.15'], // We expect ~10%, so fail if > 15%
   },
 };
 
@@ -19,7 +19,7 @@ export default function () {
   
   // --- 10% Error Logic ---
   // Generate a random number between 0 and 1
-  const isErrorRequest = Math.random() < 0.0; 
+  const isErrorRequest = Math.random() < 0.1; 
   
   let email;
   if (isErrorRequest) {
@@ -47,8 +47,8 @@ export default function () {
   check(res, {
     // We expect some failures now, so we track both
     'is success (100%)': (r) => r.status === 201 || r.status === 200,
-    // 'is client error (10%)': (r) => r.status >= 400 && r.status < 500,
-    // 'transaction time < 500ms': (r) => r.timings.duration < 500,
+    'is client error (10%)': (r) => r.status >= 400 && r.status < 500,
+    'transaction time < 500ms': (r) => r.timings.duration < 500,
   });
 
   sleep(1);

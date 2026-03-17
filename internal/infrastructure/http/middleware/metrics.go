@@ -83,16 +83,26 @@ func (m *MetricsMiddleware) Handle() gin.HandlerFunc {
 		r := c.Request
 		ctx := r.Context()
 
-		m.activeRequests.Add(ctx, 1, metric.WithAttributes(
+		route := c.FullPath()
+		if route == "" {
+			route = "not_found"
+		}
+
+		baseAttrs := []attribute.KeyValue{
 			attribute.String("http.method", r.Method),
-			attribute.String("http.route", r.URL.Path),
+			attribute.String("http.route", route),
+		}
+
+		m.activeRequests.Add(ctx, 1, metric.WithAttributes(
+			baseAttrs...,
 		))
+
+		defer m.activeRequests.Add(ctx, -1, metric.WithAttributes(baseAttrs...))
 
 		if r.ContentLength > 0 {
 			m.requestSize.Record(ctx, r.ContentLength,
 				metric.WithAttributes(
-					attribute.String("http.method", r.Method),
-					attribute.String("http.route", r.URL.Path),
+					baseAttrs...,
 				),
 			)
 		}
@@ -102,23 +112,17 @@ func (m *MetricsMiddleware) Handle() gin.HandlerFunc {
 
 		duration := time.Since(start).Milliseconds()
 
-		attrs := []attribute.KeyValue{
-			attribute.String("http.method", r.Method),
-			attribute.String("http.route", r.URL.Path),
+		fullAttrs := append(baseAttrs,
 			attribute.Int("http.status_code", rw.Status()),
 			attribute.String("http.status_class", statusClass(rw.Status())),
-		}
-
-		m.requestCounter.Add(ctx, 1, metric.WithAttributes(attrs...))
-		m.requestDuration.Record(ctx, float64(duration), metric.WithAttributes(attrs...))
-		m.responseSize.Record(ctx, int64(rw.Size()), metric.WithAttributes(attrs...))
-
-		m.activeRequests.Add(ctx, -1,
-			metric.WithAttributes(
-				attribute.String("http.method", r.Method),
-				attribute.String("http.route", r.URL.Path),
-			),
 		)
+
+		m.requestCounter.Add(ctx, 1, metric.WithAttributes(fullAttrs...))
+		m.requestDuration.Record(ctx, float64(duration), metric.WithAttributes(fullAttrs...))
+
+		if rw.Size() > 0 {
+			m.responseSize.Record(ctx, int64(rw.Size()), metric.WithAttributes(fullAttrs...))
+		}
 	}
 }
 

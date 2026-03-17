@@ -29,19 +29,21 @@ func (t *TracingMiddleware) Handle() gin.HandlerFunc {
 			propagation.HeaderCarrier(r.Header),
 		)
 
-		target := r.URL.Path
-		schema := r.URL.Scheme
-		spanName := r.Method + " " + target
+		route := c.FullPath()
+		if route == "" {
+			route = "not_found"
+		}
+
+		// target := r.URL.Path
+		spanName := r.Method + " " + route
 		ctx, span := t.tracer.Start(ctx, spanName, trace.WithSpanKind(trace.SpanKindServer),
 			trace.WithAttributes(
 				semconv.HTTPRequestMethodKey.String(r.Method),
-				semconv.URLPath(target),
-				semconv.URLScheme(schema),
-				semconv.HTTPRoute(target),
-				semconv.UserAgentName(r.UserAgent()),
+				semconv.HTTPRoute(route),            // Pattern: /api/customer/:id
+				semconv.URLPath(r.URL.Path),         // Specific: /api/customer/123
+				semconv.ClientAddress(c.ClientIP()), // Cleaner IP extraction
+				semconv.UserAgentOriginal(r.UserAgent()),
 				semconv.HTTPRequestBodySize(int(r.ContentLength)),
-				semconv.HostName(r.Host),
-				semconv.ClientAddress(r.RemoteAddr),
 			),
 		)
 		defer span.End()

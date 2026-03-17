@@ -2,6 +2,7 @@ package customerprofileapp
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/akaporn-katip/go-project-structure-template/internal/application/unitofwork"
 	"github.com/akaporn-katip/go-project-structure-template/internal/domain/customerprofile"
@@ -33,6 +34,11 @@ func (h *FindByIdQueryHandler) Handle(ctx context.Context, query FindByIDQuery) 
 	if err != nil {
 		return nil, customerprofile.NewFindByIDNotFoundError()
 	}
+
+	slog.InfoContext(ctx, "find customer with id", slog.String("id", query.ID))
+	defer func() {
+		slog.InfoContext(ctx, "find customer completed")
+	}()
 
 	return h.uow.Repositories().CustomerProfileRepository().FindByID(ctx, *id)
 }

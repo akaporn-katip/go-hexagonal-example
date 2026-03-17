@@ -21,9 +21,9 @@ observability:
   service_name: "go-hexagonal-example"
   environment: "development"
   service_version: "1.0.0"
-  metrics_interval: 60s
+  metrics_interval: 5s
   enable_metrics: true
   enable_tracing: true
   enable_logging: true
   log_level: "debug"  # Options: debug, info, warn, error
-  trace_sample_rate: 0.1   # Sample 10% of traces in production
+  trace_sample_rate: 0.9   # Sample 10% of traces in production
